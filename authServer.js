@@ -9,22 +9,15 @@ app.use(express.urlencoded({extended:false}));//////////////////////////////////
 
 const jwt=require('jsonwebtoken')
 
-const posts=[
-    {
-        username:'abc',
-        title:"post 1"
-    },
-    {
-        username:'bcd',
-        title:"post 2"
-    }
+app.post('/login',(req,res)=>{
+    //Authenticate login
 
-]
+    const username=req.body.username
+    const user={name:username}
 
-app.get('/posts',authenticateToken,(req,res)=>{
-
-    res.json(posts.filter(post=>post.username==req.user.name))
-}) 
+    const accessToken=jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    res.json({accessToken: accessToken})
+})
 
 function authenticateToken(req,res,next){
     let authheader=req.headers['authorization']// authheader = Bearer TOKEN
@@ -37,6 +30,6 @@ function authenticateToken(req,res,next){
     })
 }
 
-app.listen(3000,()=>{
+app.listen(4000,()=>{
     console.log('app running')
 })
